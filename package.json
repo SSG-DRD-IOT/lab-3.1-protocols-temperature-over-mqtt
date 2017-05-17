@@ -1,14 +1,27 @@
 {
   "name": "protocol-mqtt",
-  "description": "Publishes temperature data over MQTT",
+  "description": "Creates a simple service to publish a temperature sensor's data over MQTT",
   "version": "0.0.0",
   "main": "main.js",
   "engines": {
     "node": ">=0.10.0"
   },
-  "license": "BSD-3-Clause",
+  "license": "MIT",
   "private": true,
   "dependencies": {
-      "mqtt": "latest"
-  }
+    "mqtt": "latest"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SSG-DRD-IOT/lab-protocols-temperature-over-mqtt.git"
+  },
+  "author": "",
+  "bugs": {
+    "url": "https://github.com/SSG-DRD-IOT/lab-protocols-temperature-over-mqtt/issues"
+  },
+  "homepage": "https://github.com/SSG-DRD-IOT/lab-protocols-temperature-over-mqtt#readme"
 }
