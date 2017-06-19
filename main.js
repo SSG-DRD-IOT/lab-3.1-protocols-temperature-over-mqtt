@@ -22,6 +22,9 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+var mraa = require("mraa") ;
+mraa.addSubplatform(mraa.GENERIC_FIRMATA, "/dev/ttyACM0");
+
 // Require MQTT and setup the connection to the broker
 var mqtt = require('mqtt');
 var mqttClient = mqtt.connect("mqtt://localhost/");
@@ -33,7 +36,7 @@ var groveSensor = require('jsupm_grove');
 var OFFSET = 512;
 
 // Instantiate the temperature sensor and LCD actuator
-var temp = new groveSensor.GroveTemp(1+OFFSET, 0.66); // Create a new instance of a Grove Temperature Sensor
+var temp = new groveSensor.GroveTemp(0+OFFSET, 0.60); // Create a new instance of a Grove Temperature Sensor
 
 // monitor: creates an anonymous function that runs once per second
 // The function will get the temperature and display it on the LCD.
