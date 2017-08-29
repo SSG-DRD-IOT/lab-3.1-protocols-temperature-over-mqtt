@@ -32,10 +32,32 @@ mraa.addSubplatform(mraa.GENERIC_FIRMATA, "/dev/ttyACM0");
 
 ////////////////////////////////////////////////////////////////////////////////
 // ISTV Block 2
-// Load the MQTT library and setup the connections to the MQTT broker on the Gateway
+// Load the MQTT library, the certs and setup the parameters to make a connection
+// to the MQTT broker on the Gateway
 ////////////////////////////////////////////////////////////////////////////////
 const mqtt = require('mqtt');
-var mqttClient = mqtt.connect("mqtt://gateway-ip-address/");
+
+var KEY = fs.readFileSync('/etc/tls-certs/certs/server.key');
+var CERT = fs.readFileSync('/etc/tls-certs/certs/server.crt');
+var TRUSTED_CA_LIST = [fs.readFileSync('/etc/tls-certs/ca_certificates/ca.crt')];
+
+var PORT = 8883;
+var HOST = 'localhost';
+
+var options = {
+  port: PORT,
+  host: HOST,
+  protocol: 'mqtts',
+  protocolId: 'MQIsdp',
+  keyPath: KEY,
+  certPath: CERT,
+  rejectUnauthorized : false,
+  //The CA list will be used to determine if server is authorized
+  ca: TRUSTED_CA_LIST,
+  secureProtocol: 'TLSv1_method',
+  protocolVersion: 3
+};
+var mqttClient = mqtt.connect(options);
 // end ISTV block
 
 ////////////////////////////////////////////////////////////////////////////////
