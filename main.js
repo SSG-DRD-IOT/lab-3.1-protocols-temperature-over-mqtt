@@ -36,17 +36,13 @@ mraa.addSubplatform(mraa.GENERIC_FIRMATA, "/dev/ttyACM0");
 // to the MQTT broker on the Gateway
 ////////////////////////////////////////////////////////////////////////////////
 const mqtt = require('mqtt');
-
 var KEY = fs.readFileSync('/etc/tls-certs/certs/server.key');
 var CERT = fs.readFileSync('/etc/tls-certs/certs/server.crt');
 var TRUSTED_CA_LIST = [fs.readFileSync('/etc/tls-certs/ca_certificates/ca.crt')];
 
-var PORT = 8883;
-var HOST = 'localhost';
-
 var options = {
-  port: PORT,
-  host: HOST,
+  port: 'localhost',
+  host: 8883,
   protocol: 'mqtts',
   protocolId: 'MQIsdp',
   keyPath: KEY,
@@ -61,7 +57,7 @@ var mqttClient = mqtt.connect(options);
 // end ISTV block
 
 ////////////////////////////////////////////////////////////////////////////////
-// ISTV Block 2
+// ISTV Block 3
 // Load the UPM library that contains the temperature sensor and declare
 // an offset because we are using Firmata and instantiate a temperature sensor
 ////////////////////////////////////////////////////////////////////////////////
@@ -71,7 +67,7 @@ var temp = new upm.GroveTemp(0 + OFFSET);
 // end ISTV block
 
 ////////////////////////////////////////////////////////////////////////////////
-// ISTV Block 3
+// ISTV Block 4
 // use the setInterval to run a function to read from the temperature sensor
 // and publish the value over MQTT once per second. Note that we will be publishing
 // the sensor value over MQTT as a stringified JSON object.
@@ -80,7 +76,7 @@ setInterval(function() {
 // end ISTV block
 
   ////////////////////////////////////////////////////////////////////////////////
-  // ISTV Block 4
+  // ISTV Block 5
   // Read the temperature sensor and get the current time
   ////////////////////////////////////////////////////////////////////////////////
   var celsius = temp.value();
@@ -88,7 +84,7 @@ setInterval(function() {
   // end ISTV block
 
   ////////////////////////////////////////////////////////////////////////////////
-  // ISTV Block 5
+  // ISTV Block 6
   // This JSON structure is extremely important. Future labs will assume that
   // every temperature reading has a "sensor_id", "value" and "timestamp"
   ////////////////////////////////////////////////////////////////////////////////
@@ -100,7 +96,7 @@ setInterval(function() {
   // end ISTV block
 
   ////////////////////////////////////////////////////////////////////////////////
-  // ISTV Block 6
+  // ISTV Block 7
   // Convert the JSON object to a string
   // Publish the temperature reading string on the MQTT topic
   ////////////////////////////////////////////////////////////////////////////////
