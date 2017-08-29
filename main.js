@@ -38,7 +38,6 @@ const mqtt = require('mqtt');
 var mqttClient = mqtt.connect("mqtt://gateway-ip-address/");
 // end ISTV block
 
-
 ////////////////////////////////////////////////////////////////////////////////
 // ISTV Block 2
 // Load the UPM library that contains the temperature sensor and declare
@@ -47,44 +46,41 @@ var mqttClient = mqtt.connect("mqtt://gateway-ip-address/");
 const upm = require('jsupm_grove');
 const OFFSET = 512;
 var temp = new upm.GroveTemp(0 + OFFSET);
+// end ISTV block
 
-// monitor: creates an anonymous function that runs once per second
-// The function will get the temperature and display it on the LCD.
-function monitor() {
-  setInterval(function() {
-    // Read the temperature sensor
-    var celsius = temp.value();
+////////////////////////////////////////////////////////////////////////////////
+// ISTV Block 3
+// use the setInterval to run a function to read from the temperature sensor
+// and publish the value over MQTT once per second. Note that we will be publishing
+// the sensor value over MQTT as a stringified JSON object.
+////////////////////////////////////////////////////////////////////////////////
+setInterval(function() {
+  // end ISTV block
 
-    // Convert it to fahrenheit
-    var fahrenheit = Math.round(celsius * 9.0 / 5.0 + 32.0);
+  ////////////////////////////////////////////////////////////////////////////////
+  // ISTV Block 4
+  // Read the temperature sensor and get the current time
+  ////////////////////////////////////////////////////////////////////////////////
+  var celsius = temp.value();
+  var current_time = (new Date).getTime();
 
-    // Log it to the console window
-    console.log(celsius + "° Celsius, or " + fahrenheit + "° Fahrenheit");
+  ////////////////////////////////////////////////////////////////////////////////
+  // ISTV Block 5
+  // This JSON structure is extremely important. Future labs will assume that
+  // every temperature reading has a "sensor_id", "value" and "timestamp"
+  ////////////////////////////////////////////////////////////////////////////////
+  var json = {
+    sensor_id: "temperature",
+    value: celsius,
+    timestamp: current_time
+  };
 
-    // Get the current time
-    var current_time = (new Date).getTime();
-
-    /*
-          This JSON structure is extremely important
-          future labs will assume that every temperature
-          reading has a "sensor_id", "value" and "timestamp"
-        */
-    var json = {
-      sensor_id: "temperature",
-      value: celsius,
-      timestamp: current_time
-    };
-
-    // Convert the JSON object to a string
-    var str = JSON.stringify(json);
-
-    // Log the string to the console
-    console.log(str);
-
-    // Publish the temperature reading string on the MQTT topic
-    mqttClient.publish("sensors/temperature/data", str);
-  }, 1000);
-}
-
-// Call the monitor function once
-monitor();
+  ////////////////////////////////////////////////////////////////////////////////
+  // ISTV Block 6
+  // Convert the JSON object to a string
+  // Publish the temperature reading string on the MQTT topic
+  ////////////////////////////////////////////////////////////////////////////////
+  var str = JSON.stringify(json);
+  mqttClient.publish("sensors/temperature/data", str);
+  
+}, 1000);
