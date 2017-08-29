@@ -26,7 +26,7 @@
 // ISTV Block 1
 // First load the MRAA library and set the serial communciation port
 ////////////////////////////////////////////////////////////////////////////////
-var mraa = require("mraa");
+const mraa = require("mraa");
 mraa.addSubplatform(mraa.GENERIC_FIRMATA, "/dev/ttyACM0");
 // end ISTV block
 
@@ -34,19 +34,19 @@ mraa.addSubplatform(mraa.GENERIC_FIRMATA, "/dev/ttyACM0");
 // ISTV Block 2
 // Load the MQTT library and setup the connections to the MQTT broker on the Gateway
 ////////////////////////////////////////////////////////////////////////////////
-var mqtt = require('mqtt');
+const mqtt = require('mqtt');
 var mqttClient = mqtt.connect("mqtt://gateway-ip-address/");
 // end ISTV block
 
 
-// Include the JavaScript UPM libraries
-var groveSensor = require('jsupm_grove');
-
-// The Offset is necessary for Firmata
-var OFFSET = 512;
-
-// Instantiate the temperature sensor and LCD actuator
-var temp = new groveSensor.GroveTemp(0 + OFFSET, 0.60); // Create a new instance of a Grove Temperature Sensor
+////////////////////////////////////////////////////////////////////////////////
+// ISTV Block 2
+// Load the UPM library that contains the temperature sensor and declare
+// an offset because we are using Firmata and instantiate a temperature sensor
+////////////////////////////////////////////////////////////////////////////////
+const upm = require('jsupm_grove');
+const OFFSET = 512;
+var temp = new upm.GroveTemp(0 + OFFSET);
 
 // monitor: creates an anonymous function that runs once per second
 // The function will get the temperature and display it on the LCD.
