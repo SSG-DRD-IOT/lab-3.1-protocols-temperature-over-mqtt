@@ -22,58 +22,67 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-var mraa = require("mraa") ;
+////////////////////////////////////////////////////////////////////////////////
+// ISTV Block 1
+// First load the MRAA library and set the serial communciation port
+////////////////////////////////////////////////////////////////////////////////
+const mraa = require("mraa");
 mraa.addSubplatform(mraa.GENERIC_FIRMATA, "/dev/ttyACM0");
+// end ISTV block
 
-// Require MQTT and setup the connection to the broker
-var mqtt = require('mqtt');
-var mqttClient = mqtt.connect("mqtt://localhost/");
+////////////////////////////////////////////////////////////////////////////////
+// ISTV Block 2
+// Load the MQTT library and setup the connections to the MQTT broker on the Gateway
+////////////////////////////////////////////////////////////////////////////////
+const mqtt = require('mqtt');
+var mqttClient = mqtt.connect("mqtt://gateway-ip-address/");
+// end ISTV block
 
-// Include the JavaScript UPM libraries
-var groveSensor = require('jsupm_grove');
 
-// The Offset is necessary for Firmata
-var OFFSET = 512;
-
-// Instantiate the temperature sensor and LCD actuator
-var temp = new groveSensor.GroveTemp(0+OFFSET, 0.60); // Create a new instance of a Grove Temperature Sensor
+////////////////////////////////////////////////////////////////////////////////
+// ISTV Block 2
+// Load the UPM library that contains the temperature sensor and declare
+// an offset because we are using Firmata and instantiate a temperature sensor
+////////////////////////////////////////////////////////////////////////////////
+const upm = require('jsupm_grove');
+const OFFSET = 512;
+var temp = new upm.GroveTemp(0 + OFFSET);
 
 // monitor: creates an anonymous function that runs once per second
 // The function will get the temperature and display it on the LCD.
 function monitor() {
-  setInterval(
-    function() {
-      // Read the temperature sensor
-      var celsius = temp.value();
+  setInterval(function() {
+    // Read the temperature sensor
+    var celsius = temp.value();
 
-      // Convert it to fahrenheit
-      var fahrenheit = Math.round(celsius * 9.0 / 5.0 + 32.0);
+    // Convert it to fahrenheit
+    var fahrenheit = Math.round(celsius * 9.0 / 5.0 + 32.0);
 
-      // Log it to the console window
-      console.log(celsius + "° Celsius, or " + fahrenheit + "° Fahrenheit");
+    // Log it to the console window
+    console.log(celsius + "° Celsius, or " + fahrenheit + "° Fahrenheit");
 
-        // Get the current time
-        var current_time = (new Date).getTime();
+    // Get the current time
+    var current_time = (new Date).getTime();
 
-        /*
+    /*
           This JSON structure is extremely important
           future labs will assume that every temperature
           reading has a "sensor_id", "value" and "timestamp"
         */
-        var json = {
-          sensor_id : "temperature",
-          value : celsius,
-          timestamp : current_time
-        };
+    var json = {
+      sensor_id: "temperature",
+      value: celsius,
+      timestamp: current_time
+    };
 
-        // Convert the JSON object to a string
-        var str = JSON.stringify(json);
+    // Convert the JSON object to a string
+    var str = JSON.stringify(json);
 
-        // Log the string to the console
-        console.log(str);
+    // Log the string to the console
+    console.log(str);
 
-        // Publish the temperature reading string on the MQTT topic
-        mqttClient.publish("sensors/temperature/data", str);
+    // Publish the temperature reading string on the MQTT topic
+    mqttClient.publish("sensors/temperature/data", str);
   }, 1000);
 }
 
