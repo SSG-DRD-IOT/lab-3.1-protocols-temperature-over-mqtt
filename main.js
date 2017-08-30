@@ -73,35 +73,13 @@ var temp = new upm.GroveTemp(0 + OFFSET);
 // the sensor value over MQTT as a stringified JSON object.
 ////////////////////////////////////////////////////////////////////////////////
 setInterval(function() {
-// end ISTV block
-
-  ////////////////////////////////////////////////////////////////////////////////
-  // ISTV Block 5
-  // Read the temperature sensor and get the current time
-  ////////////////////////////////////////////////////////////////////////////////
-  var celsius = temp.value();
-  var current_time = (new Date).getTime();
-  // end ISTV block
-
-  ////////////////////////////////////////////////////////////////////////////////
-  // ISTV Block 6
-  // This JSON structure is extremely important. Future labs will assume that
-  // every temperature reading has a "sensor_id", "value" and "timestamp"
-  ////////////////////////////////////////////////////////////////////////////////
   var json = {
     sensor_id: "temperature",
-    value: celsius,
-    timestamp: current_time
+    value: temp.value(),
+    timestamp:  (new Date).getTime()
   };
-  // end ISTV block
 
-  ////////////////////////////////////////////////////////////////////////////////
-  // ISTV Block 7
-  // Convert the JSON object to a string
-  // Publish the temperature reading string on the MQTT topic
-  ////////////////////////////////////////////////////////////////////////////////
-  var str = JSON.stringify(json);
-  mqttClient.publish("sensors/temperature/data", str);
-  // end ISTV block
-
+  var data = JSON.stringify(json);
+  mqttClient.publish("sensors/temperature/data", data);
 }, 1000);
+  // end ISTV block
